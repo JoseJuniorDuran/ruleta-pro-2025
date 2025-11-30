@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ruleta Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=2.0">
+    <link rel="icon" type="image/png" href="img/favicon-circle.png?v=2.0">
+    <link rel="shortcut icon" type="image/png" href="img/favicon-circle.png?v=2.0">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <!-- Fondos y acentos decorativos -->
+    <div class="bg-accents">
+        <span class="glow glow-1"></span>
+        <span class="glow glow-2"></span>
+        <span class="grid"></span>
+    </div>
+
+    <!-- Cabecera hero -->
+    <header class="hero">
+        <p class="eyebrow">Ruleta Pro 2025</p>
+        <h1>Gira la rueda y elige al ganador al instante</h1>
+        <p class="subtitle">Personaliza los nombres, pulsa <strong>Girar</strong> y deja que la suerte decida.</p>
+    </header>
+
+    <!-- Layout principal -->
+    <div class="app-layout">
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel-frame">
+                <canvas id="wheelCanvas"></canvas>
+            </div>
+            <div class="center-hub"></div>
+        </div>
+        <div class="controls-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Participantes</h2>
+                    <span id="count" class="badge">0</span>
+                </div>
+                <textarea id="participants" placeholder="Ingresa nombres..."></textarea>
+                <div class="buttons">
+                    <button id="spinBtn" class="btn-spin">GIRAR</button>
+                    <button id="resetBtn" class="btn-reset">Reiniciar</button>
+                </div>
+                <div id="result" class="result-box hidden">
+                    <small>El ganador es:</small>
+                    <h1 id="winnerName">---</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="site-footer">
+        <span>© 2025 Ruleta Pro · Todos los derechos reservados · Jose Junior Duran Contreas</span>
+    </footer>
+    <script src="js/app.js?v=2.0"></script>
+</body>
+
+</html>

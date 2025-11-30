@@ -27,7 +27,12 @@ class Engine {
         this.pi.addEventListener('input', () => this._u());
         this.sb.addEventListener('click', () => this._s());
         this.rb.addEventListener('click', () => this._r());
-        window.addEventListener('resize', () => this._d());
+        // Debounce para resize (optimización móvil)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => this._d(), 100);
+        });
 
         // Valores por defecto en el textarea (sin tildes para evitar problemas de encoding)
         this.pi.value = "Juan\nMaria\nPepe\nLucia\nCarlos\nAna";
@@ -198,59 +203,15 @@ class Engine {
         const cir = fr - sr;
         const st = performance.now();
 
+        // Variables para la lógica de audio físico
+        const segmentAngle = 360 / this.p.length;
+        let lastSegmentIndex = -1;
+
         const a = (ct) => {
             const el = ct - st;
 
             if (el < du) {
                 const t = el / du;
                 const e = 1 - Math.pow(1 - t, 4); // suavizado ease-out
-                this.cr = sr + (cir * e);
-                this.f.style.transform = `rotate(${this.cr}deg)`;
-
-                if (Math.random() > e && Math.random() < 0.3) {
-                    this._pt();
-                }
-                requestAnimationFrame(a);
-            } else {
-                this.cr = fr;
-                this.f.style.transform = `rotate(${this.cr}deg)`;
-                this.is = false;
-                this.sb.disabled = false;
-                this._sw(this.p[wi]);
-            }
-        };
-
-        requestAnimationFrame(a);
-    }
-
-    _sw(n) {
-        this.wd.textContent = n;
-        this.bx.classList.remove('hidden');
-        this._pw();
-
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 }
+            });
         });
-    }
-
-    _r() {
-        this.bx.classList.add('hidden');
-        this.is = false;
-        this.sb.disabled = false;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    new Engine();
-
-    // Bloqueo básico de inspección rápida (no es seguridad real)
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
-    document.addEventListener('keydown', (e) => {
-        const key = e.key.toUpperCase();
-        if (key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(key))) {
-            e.preventDefault();
-        }
-    });
-});

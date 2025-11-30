@@ -1,6 +1,6 @@
 # 🎡 Ruleta Manipulada PRO 2025
 
-![Vista previa de la ruleta](./screenshots/Ruleta_preview.jpg)
+![Vista previa de la ruleta](./public/screenshots/Ruleta_preview.jpg)
 
 **Ruleta Manipulada PRO 2025** es una aplicación web moderna y totalmente responsiva diseñada para sorteos, dinámicas y presentaciones. Permite la personalización completa de los participantes y cuenta con un sistema discreto para predeterminar al ganador.
 

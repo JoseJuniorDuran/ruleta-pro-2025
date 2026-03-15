@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ruleta Pro 2025 — Sorteo Premium</title>
+    <meta name="description" content="Plataforma de sorteos premium con animación cinematográfica.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎰</text></svg>">
+</head>
+<body>
+    <!-- Cinematic ambient -->
+    <div class="ambient" aria-hidden="true">
+        <div class="ambient__mesh"></div>
+        <div class="ambient__orb ambient__orb--1"></div>
+        <div class="ambient__orb ambient__orb--2"></div>
+        <div class="ambient__orb ambient__orb--3"></div>
+        <div class="ambient__grain"></div>
+        <div class="ambient__vignette"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav__left">
+            <div class="nav__logo">
+                <svg class="nav__diamond" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 1L19 10L10 19L1 10Z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M10 5L15 10L10 15L5 10Z" fill="currentColor" opacity="0.3"/>
+                </svg>
+                <span class="nav__wordmark">Ruleta<em>Pro</em></span>
+            </div>
+        </div>
+        <div class="nav__right">
+            <span class="nav__tag">Sorteo Interactivo</span>
+            <span class="nav__year">©2025</span>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" id="hero">
+        <div class="hero__content">
+            <div class="hero__eyebrow anim-fade" data-delay="0">
+                <span class="hero__dot"></span>
+                <span>Plataforma de sorteos</span>
+            </div>
+            <h1 class="hero__title">
+                <span class="anim-line" data-delay="100">Elige al</span>
+                <span class="anim-line hero__title--italic" data-delay="200">ganador</span>
+                <span class="anim-line" data-delay="300">al instante</span>
+            </h1>
+            <p class="hero__sub anim-fade" data-delay="450">Personaliza los participantes. Pulsa girar. Deja que el azar decida con estilo.</p>
+        </div>
+        <div class="hero__scroll-hint anim-fade" data-delay="600">
+            <div class="hero__scroll-line"></div>
+            <span>Scroll</span>
+        </div>
+    </header>
+
+    <!-- Main App -->
+    <main class="app" id="app">
+        <div class="app__inner">
+
+            <!-- Slot Machine -->
+            <section class="slot" aria-label="Máquina de sorteo">
+                <div class="slot__chrome">
+                    <div class="slot__status">
+                        <span class="slot__status-dot" id="statusDot"></span>
+                        <span class="slot__status-text" id="statusText">Listo</span>
+                        <span class="slot__status-timer" id="statusTimer"></span>
+                    </div>
+                    <div class="slot__machine" id="machine">
+                        <div class="slot__fade slot__fade--top"></div>
+                        <div class="slot__fade slot__fade--bottom"></div>
+                        <div class="slot__selector">
+                            <div class="slot__selector-line"></div>
+                            <svg class="slot__selector-arrow slot__selector-arrow--l" viewBox="0 0 8 14">
+                                <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            </svg>
+                            <svg class="slot__selector-arrow slot__selector-arrow--r" viewBox="0 0 8 14">
+                                <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="slot__track" id="track"></div>
+                    </div>
+                    <div class="slot__progress">
+                        <div class="slot__progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="slot__shine"></div>
+                </div>
+            </section>
+
+            <!-- Controls -->
+            <section class="controls">
+                <div class="controls__top">
+                    <span class="controls__label-tag">01</span>
+                    <h2 class="controls__heading">Participantes</h2>
+                    <p class="controls__desc">Escribe un nombre por línea. Agrega cuantos desees — todos serán mostrados durante el giro.</p>
+                </div>
+                <div class="controls__editor">
+                    <div class="controls__editor-bar">
+                        <span class="controls__editor-dot controls__editor-dot--r"></span>
+                        <span class="controls__editor-dot controls__editor-dot--y"></span>
+                        <span class="controls__editor-dot controls__editor-dot--g"></span>
+                        <span class="controls__editor-file">participantes.txt</span>
+                        <span class="controls__editor-count" id="count">0</span>
+                    </div>
+                    <textarea id="participants" class="controls__textarea" spellcheck="false" autocomplete="off">Jose Junior
+Maria
+Pepe
+Lucia
+Carlos
+Ana
+Sofia
+Miguel
+Valentina
+Diego
+Carmen
+Fernando
+Isabella
+Andres</textarea>
+                </div>
+                <div class="controls__row">
+                    <span class="controls__label-tag">02</span>
+                    <h2 class="controls__heading">Acción</h2>
+                </div>
+                <div class="controls__actions">
+                    <button id="spinBtn" class="btn btn--spin">
+                        <span class="btn__label">Girar</span>
+                        <span class="btn__arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <path d="M12 5v14M19 12l-7 7-7-7"/>
+                            </svg>
+                        </span>
+                    </button>
+                    <button id="resetBtn" class="btn btn--reset">Reiniciar</button>
+                </div>
+                <!-- Winner -->
+                <div id="result" class="winner hidden">
+                    <div class="winner__inner">
+                        <span class="winner__tag">Ganador</span>
+                        <h2 class="winner__name" id="winnerName">---</h2>
+                        <div class="winner__bar"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__inner">
+            <span class="footer__copy">© 2025 Ruleta Pro</span>
+            <span class="footer__sep">·</span>
+            <span class="footer__credit">Diseñado por Jose Junior Duran</span>
+        </div>
+    </footer>
+
+    <!-- Confetti canvas -->
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

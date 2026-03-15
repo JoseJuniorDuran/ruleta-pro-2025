@@ -181,7 +181,10 @@ class RuletaPro {
             }
         }
 
-        this.track.style.transform = 'translateX(0px)';
+        // Center the first item in the viewport
+        var vpW = this.viewport.offsetWidth;
+        var offset = (vpW / 2) - (this.itemW / 2);
+        this.track.style.transform = 'translateY(-50%) translateX(' + offset + 'px)';
     }
 
     /* ── Audio ── */
@@ -274,13 +277,15 @@ class RuletaPro {
         var winner = this.names[wi];
 
         var step = this.itemW + this.itemGap; // 236px per item
+        var vpW = this.viewport.offsetWidth;
+        var startOffset = (vpW / 2) - (this.itemW / 2);
 
         // Scroll through many full cycles
         var baseCycles = 10;
         var extraCycles = Math.ceil(this.names.length / 4);
         var totalCycles = baseCycles + extraCycles + Math.floor(Math.random() * 3);
         var targetIdx = totalCycles * this.names.length + wi;
-        var targetX = -(targetIdx * step);
+        var targetX = startOffset - (targetIdx * step);
 
         // Duration scales with participants
         var duration = Math.min(16000, 8000 + this.names.length * 250);
@@ -295,7 +300,7 @@ class RuletaPro {
             self.statusTimer.textContent = remaining.toFixed(1) + 's';
         }, 80);
 
-        this.track.style.transform = 'translateX(0px)';
+        this.track.style.transform = 'translateY(-50%) translateX(' + startOffset + 'px)';
 
         // Multi-phase easing
         function customEase(t) {
@@ -318,9 +323,9 @@ class RuletaPro {
             var elapsed = now - t0;
             var p = Math.min(elapsed / duration, 1);
             var e = customEase(p);
-            var x = targetX * e;
+            var x = startOffset + (targetX - startOffset) * e;
 
-            self.track.style.transform = 'translateX(' + x + 'px)';
+            self.track.style.transform = 'translateY(-50%) translateX(' + x + 'px)';
             self.progressBar.style.width = (p * 100) + '%';
 
             // Speed for audio
@@ -343,7 +348,7 @@ class RuletaPro {
 
             // Highlight active item
             var items = self.track.children;
-            var viewCenter = -x;
+            var viewCenter = startOffset - x;
             for (var i = 0; i < items.length; i++) {
                 var itemCenter = i * step + self.itemW / 2;
                 var d = Math.abs(itemCenter - viewCenter);

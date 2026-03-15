@@ -1,14 +1,5 @@
 /**
  * Ruleta Pro 2026 — Ultra Premium Horizontal Scroll Engine
- *
- * FEATURES:
- * - Horizontal name carousel with cinematic physics
- * - Floating particle background system
- * - Multi-phase easing with dramatic slowdown
- * - Real-time timer + progress bar
- * - Canvas confetti explosion on win
- * - Synthesized audio (ticks, drum roll, fanfare)
- * - Fully responsive
  */
 
 const FORCE_WINNER = "Jose Junior";
@@ -58,15 +49,15 @@ class RuletaPro {
         this.textarea.addEventListener('input', () => this._updateNames());
         this.spinBtn.addEventListener('click', () => this._spin());
         this.resetBtn.addEventListener('click', () => this._reset());
-        this.newSorteoBtn.addEventListener('click', () => this._reset());
+        if (this.newSorteoBtn) {
+            this.newSorteoBtn.addEventListener('click', () => this._reset());
+        }
 
         window.addEventListener('scroll', () => {
             this.nav.classList.toggle('scrolled', window.scrollY > 30);
         }, { passive: true });
 
-        this._syncItemDimensions();
         window.addEventListener('resize', () => {
-            this._syncItemDimensions();
             this._resizeCanvases();
         });
 
@@ -76,11 +67,6 @@ class RuletaPro {
         this._animateParticles();
     }
 
-    _syncItemDimensions() {
-        const v = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--name-item-w'), 10);
-        if (v) this.itemW = v;
-    }
-
     _resizeCanvases() {
         this.confettiCanvas.width = window.innerWidth;
         this.confettiCanvas.height = window.innerHeight;
@@ -88,30 +74,33 @@ class RuletaPro {
         this.particleCanvas.height = window.innerHeight;
     }
 
-    // ─── Floating Particles ───
+    /* ── Floating Particles ── */
     _initParticles() {
         this.particles = [];
-        const count = 50;
-        for (let i = 0; i < count; i++) {
+        var count = 40;
+        var W = window.innerWidth;
+        var H = window.innerHeight;
+        for (var i = 0; i < count; i++) {
             this.particles.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: (Math.random() - 0.5) * 0.3,
-                size: 1 + Math.random() * 2,
-                opacity: 0.1 + Math.random() * 0.2,
-                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                x: Math.random() * W,
+                y: Math.random() * H,
+                vx: (Math.random() - 0.5) * 0.25,
+                vy: (Math.random() - 0.5) * 0.25,
+                size: 1 + Math.random() * 1.5,
+                opacity: 0.08 + Math.random() * 0.12,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)]
             });
         }
     }
 
     _animateParticles() {
-        const ctx = this.particleCtx;
-        const W = this.particleCanvas.width;
-        const H = this.particleCanvas.height;
+        var ctx = this.particleCtx;
+        var W = this.particleCanvas.width;
+        var H = this.particleCanvas.height;
         ctx.clearRect(0, 0, W, H);
 
-        this.particles.forEach(p => {
+        for (var i = 0; i < this.particles.length; i++) {
+            var p = this.particles[i];
             p.x += p.vx;
             p.y += p.vy;
             if (p.x < 0) p.x = W;
@@ -124,75 +113,78 @@ class RuletaPro {
             ctx.fillStyle = p.color;
             ctx.globalAlpha = p.opacity;
             ctx.fill();
-        });
+        }
 
         ctx.globalAlpha = 1;
 
-        // Draw connections
-        for (let i = 0; i < this.particles.length; i++) {
-            for (let j = i + 1; j < this.particles.length; j++) {
-                const dx = this.particles[i].x - this.particles[j].x;
-                const dy = this.particles[i].y - this.particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
+        // Connection lines
+        for (var i = 0; i < this.particles.length; i++) {
+            for (var j = i + 1; j < this.particles.length; j++) {
+                var dx = this.particles[i].x - this.particles[j].x;
+                var dy = this.particles[i].y - this.particles[j].y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
                     ctx.beginPath();
                     ctx.moveTo(this.particles[i].x, this.particles[i].y);
                     ctx.lineTo(this.particles[j].x, this.particles[j].y);
-                    ctx.strokeStyle = `rgba(168, 85, 247, ${0.03 * (1 - dist / 120)})`;
+                    ctx.strokeStyle = 'rgba(168, 85, 247, ' + (0.03 * (1 - dist / 100)) + ')';
                     ctx.lineWidth = 0.5;
                     ctx.stroke();
                 }
             }
         }
 
-        requestAnimationFrame(() => this._animateParticles());
+        requestAnimationFrame(this._animateParticles.bind(this));
     }
 
-    // ─── Names Management ───
+    /* ── Names ── */
     _updateNames() {
         if (this.spinning) return;
-        this.names = this.textarea.value.split('\n').map(l => l.trim()).filter(Boolean);
-        if (!this.names.length) this.names = ['Participante 1', 'Participante 2', 'Participante 3'];
+        this.names = this.textarea.value.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+        if (this.names.length === 0) this.names = ['Participante 1', 'Participante 2', 'Participante 3'];
         this.countEl.textContent = this.names.length;
         this.displayCountEl.textContent = this.names.length + ' participante' + (this.names.length !== 1 ? 's' : '');
         this._renderTrack();
     }
 
     _renderTrack() {
-        const step = this.itemW + this.itemGap;
-        const minReps = Math.max(20, Math.ceil(100 / this.names.length));
+        var minReps = Math.max(20, Math.ceil(100 / this.names.length));
         this.track.innerHTML = '';
 
-        for (let r = 0; r < minReps; r++) {
-            this.names.forEach((name, i) => {
-                const el = document.createElement('div');
+        for (var r = 0; r < minReps; r++) {
+            for (var i = 0; i < this.names.length; i++) {
+                var name = this.names[i];
+                var color = COLORS[i % COLORS.length];
+
+                var el = document.createElement('div');
                 el.className = 'display__name-item';
-                el.style.setProperty('--bar-color', COLORS[i % COLORS.length]);
-                el.querySelector?.('::before')?.style;
 
-                const barEl = document.createElement('div');
-                barEl.style.cssText = `position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:0 999px 999px 0;background:${COLORS[i % COLORS.length]};opacity:0.5;`;
-                el.appendChild(barEl);
+                // Color bar
+                var bar = document.createElement('div');
+                bar.className = 'name-bar';
+                bar.style.background = color;
+                el.appendChild(bar);
 
-                const idx = document.createElement('span');
+                // Index number
+                var idx = document.createElement('span');
                 idx.className = 'name-index';
                 idx.textContent = String(i + 1).padStart(2, '0');
                 el.appendChild(idx);
 
-                const txt = document.createElement('span');
+                // Name text
+                var txt = document.createElement('span');
                 txt.className = 'name-text';
                 txt.textContent = name;
                 el.appendChild(txt);
 
                 this.track.appendChild(el);
-            });
+            }
         }
 
-        // Center track initially
-        this.track.style.transform = `translateX(0px)`;
+        this.track.style.transform = 'translateX(0px)';
     }
 
-    // ─── Audio ───
+    /* ── Audio ── */
     _initAudio() {
         if (!this.audioCtx) {
             this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -202,15 +194,13 @@ class RuletaPro {
 
     _tick(speed) {
         if (!this.audioCtx) return;
-        const t = this.audioCtx.currentTime;
-        const o = this.audioCtx.createOscillator();
-        const g = this.audioCtx.createGain();
+        var t = this.audioCtx.currentTime;
+        var o = this.audioCtx.createOscillator();
+        var g = this.audioCtx.createGain();
         o.type = 'triangle';
-        const baseFreq = 280 + speed * 600;
-        o.frequency.setValueAtTime(baseFreq, t);
+        o.frequency.setValueAtTime(280 + speed * 600, t);
         o.frequency.exponentialRampToValueAtTime(140, t + 0.04);
-        const vol = Math.min(0.06, 0.02 + speed * 0.04);
-        g.gain.setValueAtTime(vol, t);
+        g.gain.setValueAtTime(Math.min(0.05, 0.02 + speed * 0.03), t);
         g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
         o.connect(g);
         g.connect(this.audioCtx.destination);
@@ -220,48 +210,51 @@ class RuletaPro {
 
     _winSound() {
         if (!this.audioCtx) return;
-        const t = this.audioCtx.currentTime;
-        const notes = [523, 659, 784, 880, 1047, 1175];
-        notes.forEach((freq, i) => {
-            const o = this.audioCtx.createOscillator();
-            const g = this.audioCtx.createGain();
+        var t = this.audioCtx.currentTime;
+        var notes = [523, 659, 784, 880, 1047, 1175];
+        for (var i = 0; i < notes.length; i++) {
+            var o = this.audioCtx.createOscillator();
+            var g = this.audioCtx.createGain();
             o.type = 'sine';
-            o.frequency.value = freq;
+            o.frequency.value = notes[i];
             g.gain.setValueAtTime(0, t + i * 0.09);
-            g.gain.linearRampToValueAtTime(0.08, t + 0.07 + i * 0.09);
+            g.gain.linearRampToValueAtTime(0.07, t + 0.07 + i * 0.09);
             g.gain.exponentialRampToValueAtTime(0.001, t + 2.5 + i * 0.09);
             o.connect(g);
             g.connect(this.audioCtx.destination);
             o.start(t + i * 0.09);
             o.stop(t + 2.5 + i * 0.09);
-        });
+        }
     }
 
     _drumRoll() {
         if (!this.audioCtx) return;
-        const t = this.audioCtx.currentTime;
-        for (let i = 0; i < 25; i++) {
-            const o = this.audioCtx.createOscillator();
-            const g = this.audioCtx.createGain();
+        var t = this.audioCtx.currentTime;
+        for (var i = 0; i < 25; i++) {
+            var o = this.audioCtx.createOscillator();
+            var g = this.audioCtx.createGain();
             o.type = 'square';
             o.frequency.value = 90 + i * 10;
-            const startT = t + i * 0.035;
-            g.gain.setValueAtTime(0.018, startT);
-            g.gain.exponentialRampToValueAtTime(0.001, startT + 0.03);
+            var s = t + i * 0.035;
+            g.gain.setValueAtTime(0.015, s);
+            g.gain.exponentialRampToValueAtTime(0.001, s + 0.03);
             o.connect(g);
             g.connect(this.audioCtx.destination);
-            o.start(startT);
-            o.stop(startT + 0.03);
+            o.start(s);
+            o.stop(s + 0.03);
         }
     }
 
     _forcedIdx() {
-        const t = FORCE_WINNER.trim().toLowerCase();
-        if (!t) return -1;
-        return this.names.findIndex(n => n.toLowerCase() === t);
+        var target = FORCE_WINNER.trim().toLowerCase();
+        if (!target) return -1;
+        for (var i = 0; i < this.names.length; i++) {
+            if (this.names[i].toLowerCase() === target) return i;
+        }
+        return -1;
     }
 
-    // ─── SPIN — Horizontal Scroll ───
+    /* ── SPIN ── */
     _spin() {
         if (this.spinning || this.names.length < 2) return;
         this._initAudio();
@@ -276,109 +269,106 @@ class RuletaPro {
         this.progressBar.style.width = '0%';
 
         // Pick winner
-        let wi = this._forcedIdx();
+        var wi = this._forcedIdx();
         if (wi === -1) wi = Math.floor(Math.random() * this.names.length);
-        const winner = this.names[wi];
+        var winner = this.names[wi];
 
-        // Calculate horizontal scroll target
-        const step = this.itemW + this.itemGap;
+        var step = this.itemW + this.itemGap; // 236px per item
 
-        // Number of full list cycles to scroll through
-        const baseCycles = 10;
-        const extraCycles = Math.ceil(this.names.length / 4);
-        const totalCycles = baseCycles + extraCycles + Math.floor(Math.random() * 3);
+        // Scroll through many full cycles
+        var baseCycles = 10;
+        var extraCycles = Math.ceil(this.names.length / 4);
+        var totalCycles = baseCycles + extraCycles + Math.floor(Math.random() * 3);
+        var targetIdx = totalCycles * this.names.length + wi;
+        var targetX = -(targetIdx * step);
 
-        const targetIdx = totalCycles * this.names.length + wi;
-        const targetX = -(targetIdx * step);
+        // Duration scales with participants
+        var duration = Math.min(16000, 8000 + this.names.length * 250);
 
-        // Duration scales with participant count
-        const baseDuration = 8000;
-        const perNameExtra = 250;
-        const duration = Math.min(16000, baseDuration + this.names.length * perNameExtra);
+        var t0 = performance.now();
+        var lastTick = -1;
+        var self = this;
 
-        const t0 = performance.now();
-        let lastTick = -1;
-        let timerInterval = null;
+        var timerInterval = setInterval(function() {
+            var elapsed = performance.now() - t0;
+            var remaining = Math.max(0, (duration - elapsed) / 1000);
+            self.statusTimer.textContent = remaining.toFixed(1) + 's';
+        }, 80);
 
-        const updateTimer = () => {
-            const elapsed = performance.now() - t0;
-            const remaining = Math.max(0, (duration - elapsed) / 1000);
-            this.statusTimer.textContent = remaining.toFixed(1) + 's';
-        };
-        timerInterval = setInterval(updateTimer, 80);
+        this.track.style.transform = 'translateX(0px)';
 
-        this.track.style.transform = `translateX(0px)`;
-
-        // Multi-Phase Easing for horizontal
-        const customEase = (t) => {
+        // Multi-phase easing
+        function customEase(t) {
             if (t < 0.12) {
-                const p = t / 0.12;
+                var p = t / 0.12;
                 return 0.12 * (p * p * p);
             } else if (t < 0.55) {
-                const p = (t - 0.12) / 0.43;
+                var p = (t - 0.12) / 0.43;
                 return 0.12 + 0.55 * p;
             } else if (t < 0.82) {
-                const p = (t - 0.55) / 0.27;
+                var p = (t - 0.55) / 0.27;
                 return 0.67 + 0.22 * (1 - Math.pow(1 - p, 2));
             } else {
-                const p = (t - 0.82) / 0.18;
+                var p = (t - 0.82) / 0.18;
                 return 0.89 + 0.11 * (1 - Math.pow(1 - p, 5));
             }
-        };
+        }
 
-        const animate = (now) => {
-            const elapsed = now - t0;
-            const p = Math.min(elapsed / duration, 1);
-            const e = customEase(p);
+        function animate(now) {
+            var elapsed = now - t0;
+            var p = Math.min(elapsed / duration, 1);
+            var e = customEase(p);
+            var x = targetX * e;
 
-            const x = targetX * e;
-            this.track.style.transform = `translateX(${x}px)`;
-
-            // Progress bar
-            this.progressBar.style.width = (p * 100) + '%';
+            self.track.style.transform = 'translateX(' + x + 'px)';
+            self.progressBar.style.width = (p * 100) + '%';
 
             // Speed for audio
-            const speed = p < 0.12 ? p / 0.12 :
-                          p < 0.55 ? 1 :
-                          p < 0.82 ? 1 - ((p - 0.55) / 0.27) * 0.6 :
-                          Math.max(0, 0.4 * (1 - (p - 0.82) / 0.18));
+            var speed = p < 0.12 ? p / 0.12 :
+                        p < 0.55 ? 1 :
+                        p < 0.82 ? 1 - ((p - 0.55) / 0.27) * 0.6 :
+                        Math.max(0, 0.4 * (1 - (p - 0.82) / 0.18));
 
-            // Audio ticks on each name pass
-            const cur = Math.floor(Math.abs(x) / step);
+            // Tick sound on each name
+            var cur = Math.floor(Math.abs(x) / step);
             if (cur !== lastTick) {
                 lastTick = cur;
-                if (p < 0.95) this._tick(speed);
+                if (p < 0.95) self._tick(speed);
             }
 
             // Drum roll near end
             if (p > 0.80 && p < 0.81) {
-                this._drumRoll();
+                self._drumRoll();
             }
 
             // Highlight active item
-            const items = this.track.children;
-            const viewCenter = -x;
-            for (let i = 0; i < items.length; i++) {
-                const itemCenter = i * step + this.itemW / 2;
-                const d = Math.abs(itemCenter - viewCenter);
-                items[i].classList.toggle('active', d < this.itemW * 0.6);
+            var items = self.track.children;
+            var viewCenter = -x;
+            for (var i = 0; i < items.length; i++) {
+                var itemCenter = i * step + self.itemW / 2;
+                var d = Math.abs(itemCenter - viewCenter);
+                if (d < self.itemW * 0.6) {
+                    items[i].classList.add('active');
+                } else {
+                    items[i].classList.remove('active');
+                }
             }
 
-            // Update status
+            // Status text
             if (p > 0.78) {
-                const dots = '.';
-                const count = Math.floor((elapsed / 250) % 4);
-                this.statusText.textContent = 'Frenando' + dots.repeat(count);
+                var dots = '.';
+                var dotCount = Math.floor((elapsed / 250) % 4);
+                self.statusText.textContent = 'Frenando' + dots.repeat(dotCount);
             }
 
             if (p < 1) {
                 requestAnimationFrame(animate);
             } else {
                 clearInterval(timerInterval);
-                this.statusTimer.textContent = '';
-                this._done(winner);
+                self.statusTimer.textContent = '';
+                self._done(winner);
             }
-        };
+        }
 
         requestAnimationFrame(animate);
     }
@@ -393,27 +383,27 @@ class RuletaPro {
         this.statusText.textContent = 'Ganador';
         this.progressBar.style.width = '100%';
 
-        setTimeout(() => {
-            this.progressBar.style.width = '0%';
+        var self = this;
+        setTimeout(function() {
+            self.progressBar.style.width = '0%';
         }, 3000);
 
         this.winnerEl.textContent = winner;
         this.resultBox.classList.remove('hidden');
-
         this._winSound();
         this._launchConfetti();
     }
 
-    // ─── Canvas Confetti ───
+    /* ── Confetti ── */
     _launchConfetti() {
         this.confettiPieces = [];
-        const count = 200;
-        const W = this.confettiCanvas.width;
-        const H = this.confettiCanvas.height;
+        var count = 180;
+        var W = this.confettiCanvas.width;
+        var H = this.confettiCanvas.height;
 
-        for (let i = 0; i < count; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const power = 10 + Math.random() * 14;
+        for (var i = 0; i < count; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var power = 10 + Math.random() * 14;
             this.confettiPieces.push({
                 x: W * 0.5 + (Math.random() - 0.5) * W * 0.4,
                 y: H * 0.45,
@@ -428,7 +418,7 @@ class RuletaPro {
                 drag: 0.975 + Math.random() * 0.02,
                 opacity: 1,
                 delay: Math.random() * 25,
-                shape: Math.random() > 0.3 ? 'rect' : Math.random() > 0.5 ? 'circle' : 'star',
+                shape: Math.random() > 0.4 ? 'rect' : 'circle'
             });
         }
 
@@ -439,14 +429,17 @@ class RuletaPro {
     }
 
     _animateConfetti() {
-        const ctx = this.confettiCtx;
-        const W = this.confettiCanvas.width;
-        const H = this.confettiCanvas.height;
+        var ctx = this.confettiCtx;
+        var W = this.confettiCanvas.width;
+        var H = this.confettiCanvas.height;
         ctx.clearRect(0, 0, W, H);
 
-        let alive = 0;
-        this.confettiPieces.forEach(p => {
-            if (p.delay > 0) { p.delay--; return; }
+        var alive = 0;
+        var self = this;
+
+        for (var i = 0; i < this.confettiPieces.length; i++) {
+            var p = this.confettiPieces[i];
+            if (p.delay > 0) { p.delay--; continue; }
             p.vy += p.gravity;
             p.vx *= p.drag;
             p.x += p.vx;
@@ -454,7 +447,7 @@ class RuletaPro {
             p.rotation += p.rotSpeed;
 
             if (p.y > H + 60) p.opacity -= 0.025;
-            if (p.opacity <= 0) return;
+            if (p.opacity <= 0) continue;
             alive++;
 
             ctx.save();
@@ -465,30 +458,16 @@ class RuletaPro {
 
             if (p.shape === 'rect') {
                 ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-            } else if (p.shape === 'circle') {
+            } else {
                 ctx.beginPath();
                 ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
                 ctx.fill();
-            } else {
-                // Star shape
-                const spikes = 5;
-                const outerR = p.w;
-                const innerR = p.w / 2;
-                ctx.beginPath();
-                for (let s = 0; s < spikes * 2; s++) {
-                    const r = s % 2 === 0 ? outerR : innerR;
-                    const a = (s * Math.PI) / spikes - Math.PI / 2;
-                    if (s === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
-                    else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
-                }
-                ctx.closePath();
-                ctx.fill();
             }
             ctx.restore();
-        });
+        }
 
         if (alive > 0) {
-            requestAnimationFrame(() => this._animateConfetti());
+            requestAnimationFrame(function() { self._animateConfetti(); });
         } else {
             this.confettiRunning = false;
             ctx.clearRect(0, 0, W, H);
@@ -505,5 +484,6 @@ class RuletaPro {
     }
 }
 
-// Boot
-document.addEventListener('DOMContentLoaded', () => new RuletaPro());
+document.addEventListener('DOMContentLoaded', function() {
+    new RuletaPro();
+});

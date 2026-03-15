@@ -1,64 +1,63 @@
-# 🎰 Ruleta Pro 2025 — Sorteo Premium
+# Ruleta Pro 2026 — Sorteo Premium Ultra
 
-Plataforma de sorteos premium con slot machine vertical, animación cinematográfica y confetti.
+Plataforma de sorteos premium con carrusel horizontal cinematografico, particulas flotantes y confetti.
 
-## 🚀 Cómo Subir a GitHub y Actualizar en el Navegador
+## Como Subir a GitHub y Actualizar
 
-### Paso 1: Reemplazar archivos en tu proyecto
-Copia estos archivos a tu proyecto existente, reemplazando los anteriores:
+### Paso 1: Reemplazar archivos
 ```
 public/
-├── index.html          ← Reemplazar
-├── css/
-│   └── styles.css      ← Reemplazar
-└── js/
-    └── app.js          ← Reemplazar
+  index.html
+  css/
+    styles.css
+  js/
+    app.js
 ```
 
 ### Paso 2: Subir a GitHub
-Abre la terminal/CMD en la carpeta de tu proyecto y ejecuta:
 ```bash
-cd tu-carpeta-del-proyecto
-
 git add .
-git commit -m "Rediseño premium: slot machine vertical + animación extendida"
+git commit -m "Rediseno ultra premium: carrusel horizontal + particulas + glass morphism"
 git push origin main
 ```
 
-### Paso 3: Actualizar en Firebase (el navegador)
+### Paso 3: Deploy en Firebase
 ```bash
 firebase deploy
 ```
 
-¡Listo! Tu sitio se actualizará en **https://ruletapro2025.web.app**
+Tu sitio se actualizara en **https://ruletapro2025.web.app**
 
 ---
 
-## ⚙️ Configurar Ganador Forzado
-Edita `public/js/app.js`, línea 14:
+## Configurar Ganador Forzado
+Edita `public/js/app.js`, linea 14:
 ```javascript
-const FORCE_WINNER = "Jose Junior";  // Cambia el nombre aquí
+const FORCE_WINNER = "Jose Junior";  // Cambia el nombre aqui
 ```
-Para sorteo aleatorio real, déjalo vacío: `const FORCE_WINNER = "";`
+Para sorteo aleatorio real, dejalo vacio: `const FORCE_WINNER = "";`
 
-## ✨ Características
-- **Slot Machine Vertical**: Los nombres se deslizan hacia abajo con física realista
-- **Animación escalable**: Duración se ajusta automáticamente según cantidad de participantes (8-15 segundos)
-- **Multi-fase easing**: Aceleración → Crucero → Desaceleración dramática
+## Caracteristicas
+- **Carrusel Horizontal**: Los nombres se deslizan horizontalmente con fisica cinematografica
+- **Particulas Flotantes**: Red de particulas animadas en el fondo con conexiones dinamicas
+- **Glass Morphism**: Interfaz con efecto cristal premium
+- **Layout Split-Panel**: Controles a la izquierda, display a la derecha
+- **Multi-fase easing**: Aceleracion, crucero, desaceleracion dramatica
 - **Timer en vivo**: Cuenta regresiva visible durante el giro
-- **Barra de progreso**: Indicador visual del estado del sorteo
+- **Barra de progreso**: Indicador visual con gradiente animado
 - **Audio sintetizado**: Ticks, drum roll y fanfarria de victoria
-- **Confetti con canvas**: 150 partículas con física real
-- **Responsive**: Funciona en móvil, tablet y escritorio
-- **Hero cinematográfico**: Animaciones staggered al cargar la página
+- **Confetti avanzado**: 200 particulas con formas variadas (rectangulos, circulos, estrellas)
+- **Corona de ganador**: Revelacion cinematografica con spotlight y corona SVG
+- **Responsive**: Adaptable a movil, tablet y escritorio
+- **Dark luxury theme**: Paleta purpura/indigo con acentos dorados
 
-## 🛠️ Tecnologías
-- HTML5, CSS3, JavaScript ES6+
-- Canvas API (confetti)
-- Web Audio API (sonidos)
+## Tecnologias
+- HTML5, CSS3 (Glass Morphism, Grid Layout), JavaScript ES6+
+- Canvas API (confetti + particulas)
+- Web Audio API (sonidos sintetizados)
 - Firebase Hosting
 
-## 👨‍💻 Autor
+## Autor
 **Jose Junior Duran Contreras**
 
-© 2025 Ruleta Pro. Todos los derechos reservados.
+2026 Ruleta Pro. Todos los derechos reservados.

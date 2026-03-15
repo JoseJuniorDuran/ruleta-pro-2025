@@ -3,111 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Ruleta Pro 2025 — Sorteo Premium</title>
-    <meta name="description" content="Plataforma de sorteos premium con animación cinematográfica.">
+    <title>Ruleta Pro 2026 — Sorteo Premium</title>
+    <meta name="description" content="Plataforma de sorteos premium con animación cinematográfica de nivel profesional.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎰</text></svg>">
 </head>
 <body>
-    <!-- Cinematic ambient -->
+    <!-- Particle canvas background -->
+    <canvas id="particleCanvas" class="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- Ambient light effects -->
     <div class="ambient" aria-hidden="true">
-        <div class="ambient__mesh"></div>
         <div class="ambient__orb ambient__orb--1"></div>
         <div class="ambient__orb ambient__orb--2"></div>
         <div class="ambient__orb ambient__orb--3"></div>
+        <div class="ambient__orb ambient__orb--4"></div>
         <div class="ambient__grain"></div>
-        <div class="ambient__vignette"></div>
     </div>
 
     <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav__left">
             <div class="nav__logo">
-                <svg class="nav__diamond" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 1L19 10L10 19L1 10Z" stroke="currentColor" stroke-width="1.5"/>
-                    <path d="M10 5L15 10L10 15L5 10Z" fill="currentColor" opacity="0.3"/>
-                </svg>
+                <div class="nav__logo-icon">
+                    <svg viewBox="0 0 32 32" fill="none">
+                        <rect x="2" y="2" width="28" height="28" rx="8" stroke="url(#navGrad)" stroke-width="2"/>
+                        <circle cx="16" cy="16" r="6" fill="url(#navGrad)"/>
+                        <defs>
+                            <linearGradient id="navGrad" x1="0" y1="0" x2="32" y2="32">
+                                <stop stop-color="#a855f7"/>
+                                <stop offset="1" stop-color="#6366f1"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
                 <span class="nav__wordmark">Ruleta<em>Pro</em></span>
             </div>
         </div>
+        <div class="nav__center">
+            <span class="nav__status" id="navStatus">
+                <span class="nav__status-dot"></span>
+                Sistema Listo
+            </span>
+        </div>
         <div class="nav__right">
-            <span class="nav__tag">Sorteo Interactivo</span>
-            <span class="nav__year">©2025</span>
+            <span class="nav__badge">Premium</span>
+            <span class="nav__year">2026</span>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <header class="hero" id="hero">
-        <div class="hero__content">
-            <div class="hero__eyebrow anim-fade" data-delay="0">
-                <span class="hero__dot"></span>
-                <span>Plataforma de sorteos</span>
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Left Panel: Controls -->
+        <section class="panel panel--controls">
+            <div class="panel__header">
+                <span class="panel__tag">01 — Configurar</span>
+                <h2 class="panel__title">Participantes</h2>
+                <p class="panel__desc">Agrega los nombres de los participantes, uno por linea.</p>
             </div>
-            <h1 class="hero__title">
-                <span class="anim-line" data-delay="100">Elige al</span>
-                <span class="anim-line hero__title--italic" data-delay="200">ganador</span>
-                <span class="anim-line" data-delay="300">al instante</span>
-            </h1>
-            <p class="hero__sub anim-fade" data-delay="450">Personaliza los participantes. Pulsa girar. Deja que el azar decida con estilo.</p>
-        </div>
-        <div class="hero__scroll-hint anim-fade" data-delay="600">
-            <div class="hero__scroll-line"></div>
-            <span>Scroll</span>
-        </div>
-    </header>
 
-    <!-- Main App -->
-    <main class="app" id="app">
-        <div class="app__inner">
-
-            <!-- Slot Machine -->
-            <section class="slot" aria-label="Máquina de sorteo">
-                <div class="slot__chrome">
-                    <div class="slot__status">
-                        <span class="slot__status-dot" id="statusDot"></span>
-                        <span class="slot__status-text" id="statusText">Listo</span>
-                        <span class="slot__status-timer" id="statusTimer"></span>
+            <div class="editor">
+                <div class="editor__bar">
+                    <div class="editor__dots">
+                        <span class="editor__dot editor__dot--r"></span>
+                        <span class="editor__dot editor__dot--y"></span>
+                        <span class="editor__dot editor__dot--g"></span>
                     </div>
-                    <div class="slot__machine" id="machine">
-                        <div class="slot__fade slot__fade--top"></div>
-                        <div class="slot__fade slot__fade--bottom"></div>
-                        <div class="slot__selector">
-                            <div class="slot__selector-line"></div>
-                            <svg class="slot__selector-arrow slot__selector-arrow--l" viewBox="0 0 8 14">
-                                <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-                            </svg>
-                            <svg class="slot__selector-arrow slot__selector-arrow--r" viewBox="0 0 8 14">
-                                <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div class="slot__track" id="track"></div>
-                    </div>
-                    <div class="slot__progress">
-                        <div class="slot__progress-bar" id="progressBar"></div>
-                    </div>
-                    <div class="slot__shine"></div>
+                    <span class="editor__filename">participantes.txt</span>
+                    <span class="editor__count" id="count">0</span>
                 </div>
-            </section>
-
-            <!-- Controls -->
-            <section class="controls">
-                <div class="controls__top">
-                    <span class="controls__label-tag">01</span>
-                    <h2 class="controls__heading">Participantes</h2>
-                    <p class="controls__desc">Escribe un nombre por línea. Agrega cuantos desees — todos serán mostrados durante el giro.</p>
-                </div>
-                <div class="controls__editor">
-                    <div class="controls__editor-bar">
-                        <span class="controls__editor-dot controls__editor-dot--r"></span>
-                        <span class="controls__editor-dot controls__editor-dot--y"></span>
-                        <span class="controls__editor-dot controls__editor-dot--g"></span>
-                        <span class="controls__editor-file">participantes.txt</span>
-                        <span class="controls__editor-count" id="count">0</span>
-                    </div>
-                    <textarea id="participants" class="controls__textarea" spellcheck="false" autocomplete="off">Jose Junior
+                <textarea id="participants" class="editor__textarea" spellcheck="false" autocomplete="off">Jose Junior
 Maria
 Pepe
 Lucia
@@ -121,40 +89,97 @@ Carmen
 Fernando
 Isabella
 Andres</textarea>
+            </div>
+
+            <div class="actions">
+                <div class="actions__header">
+                    <span class="panel__tag">02 — Ejecutar</span>
+                    <h2 class="panel__title panel__title--sm">Sorteo</h2>
                 </div>
-                <div class="controls__row">
-                    <span class="controls__label-tag">02</span>
-                    <h2 class="controls__heading">Acción</h2>
-                </div>
-                <div class="controls__actions">
-                    <button id="spinBtn" class="btn btn--spin">
-                        <span class="btn__label">Girar</span>
-                        <span class="btn__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                                <path d="M12 5v14M19 12l-7 7-7-7"/>
+                <div class="actions__btns">
+                    <button id="spinBtn" class="btn btn--spin" aria-label="Iniciar sorteo">
+                        <span class="btn__glow"></span>
+                        <span class="btn__content">
+                            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
                             </svg>
+                            <span class="btn__text">Iniciar Sorteo</span>
                         </span>
                     </button>
-                    <button id="resetBtn" class="btn btn--reset">Reiniciar</button>
+                    <button id="resetBtn" class="btn btn--reset" aria-label="Reiniciar">
+                        <svg class="btn__icon btn__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="1 4 1 10 7 10"/>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                        </svg>
+                    </button>
                 </div>
-                <!-- Winner -->
-                <div id="result" class="winner hidden">
-                    <div class="winner__inner">
-                        <span class="winner__tag">Ganador</span>
-                        <h2 class="winner__name" id="winnerName">---</h2>
-                        <div class="winner__bar"></div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Display -->
+        <section class="panel panel--display">
+            <!-- Status Bar -->
+            <div class="display__status">
+                <div class="display__status-left">
+                    <span class="display__status-dot" id="statusDot"></span>
+                    <span class="display__status-text" id="statusText">En espera</span>
+                </div>
+                <div class="display__status-right">
+                    <span class="display__status-timer" id="statusTimer"></span>
+                    <span class="display__status-count" id="displayCount">14 participantes</span>
+                </div>
+            </div>
+
+            <!-- Horizontal Scroll Display -->
+            <div class="display" id="display">
+                <div class="display__viewport" id="viewport">
+                    <div class="display__selector">
+                        <div class="display__selector-glow"></div>
+                    </div>
+                    <div class="display__track" id="track">
+                        <!-- Names rendered by JS -->
                     </div>
                 </div>
-            </section>
-        </div>
+                <!-- Progress -->
+                <div class="display__progress">
+                    <div class="display__progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- Winner Reveal -->
+            <div id="result" class="winner hidden">
+                <div class="winner__spotlight"></div>
+                <div class="winner__content">
+                    <div class="winner__crown">
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <path d="M6 32L10 14L18 22L24 8L30 22L38 14L42 32H6Z" fill="url(#crownGrad)" opacity="0.9"/>
+                            <path d="M6 32H42V36C42 38.2 40.2 40 38 40H10C7.8 40 6 38.2 6 36V32Z" fill="url(#crownGrad)"/>
+                            <circle cx="10" cy="14" r="3" fill="#fbbf24"/>
+                            <circle cx="24" cy="8" r="3" fill="#fbbf24"/>
+                            <circle cx="38" cy="14" r="3" fill="#fbbf24"/>
+                            <defs>
+                                <linearGradient id="crownGrad" x1="6" y1="8" x2="42" y2="40">
+                                    <stop stop-color="#fbbf24"/>
+                                    <stop offset="1" stop-color="#f59e0b"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="winner__label">Ganador del Sorteo</span>
+                    <h2 class="winner__name" id="winnerName">---</h2>
+                    <div class="winner__divider"></div>
+                    <button id="newSorteoBtn" class="btn btn--new">Nuevo Sorteo</button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer__inner">
-            <span class="footer__copy">© 2025 Ruleta Pro</span>
-            <span class="footer__sep">·</span>
-            <span class="footer__credit">Diseñado por Jose Junior Duran</span>
+            <span class="footer__brand">Ruleta Pro 2026</span>
+            <span class="footer__sep"></span>
+            <span class="footer__credit">Creado por Jose Junior Duran</span>
         </div>
     </footer>
 

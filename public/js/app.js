@@ -59,6 +59,7 @@ class RuletaPro {
 
         window.addEventListener('resize', () => {
             this._resizeCanvases();
+            if (!this.spinning) this._renderTrack();
         });
 
         this._resizeCanvases();
@@ -179,6 +180,12 @@ class RuletaPro {
 
                 this.track.appendChild(el);
             }
+        }
+
+        // Update itemW from actual rendered DOM (respects CSS responsive overrides)
+        var firstItem = this.track.firstElementChild;
+        if (firstItem) {
+            this.itemW = firstItem.offsetWidth;
         }
 
         // Center the first item in the viewport
@@ -348,7 +355,7 @@ class RuletaPro {
 
             // Highlight active item
             var items = self.track.children;
-            var viewCenter = startOffset - x;
+            var viewCenter = vpW / 2 - x;
             for (var i = 0; i < items.length; i++) {
                 var itemCenter = i * step + self.itemW / 2;
                 var d = Math.abs(itemCenter - viewCenter);
